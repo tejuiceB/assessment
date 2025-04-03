@@ -377,6 +377,27 @@ sequenceDiagram
 
 ```
 
+### Simple Explanation of the Flow:
+1. **Connection Start**
+   - User clicks "Connect to HubSpot" button
+   - Frontend asks backend for authorization URL
+   - Backend creates a security token and stores it in Redis
+   - Frontend opens a popup window with HubSpot login
+
+2. **Authorization Process**
+   - User logs into HubSpot and approves the app
+   - HubSpot sends an authorization code back
+   - Backend verifies everything is secure
+   - Backend gets access token from HubSpot
+   - Token is safely stored in Redis
+
+3. **Data Loading**
+   - Frontend requests stored credentials
+   - Backend gets credentials from Redis
+   - Frontend asks for HubSpot data
+   - Backend fetches contacts from HubSpot
+   - Data is shown to user in the interface
+
 ## Integration Workflows
 
 ```mermaid
@@ -431,6 +452,36 @@ graph TD
 
 ```
 
+### Simple Explanation of Each Integration:
+1. **Common Parts for All**
+   - Same user interface for everyone
+   - One form to select which service to use
+   - Same display area for all data
+
+2. **How Each Integration Works**
+   - **Airtable Flow**:
+     * Connect to Airtable
+     * Get permission
+     * Get login details
+     * Load tables and data
+
+   - **Notion Flow**:
+     * Connect to Notion
+     * Get permission
+     * Get login details
+     * Load pages and content
+
+   - **HubSpot Flow**:
+     * Connect to HubSpot
+     * Get permission
+     * Get login details
+     * Load contacts and deals
+
+3. **End Result**
+   - All data shows up in the same format
+   - User sees a consistent interface
+   - Easy to switch between services
+
 ### Integration Flow Comparison
 
 1. **Frontend Layer**
@@ -464,19 +515,33 @@ graph TD
 | Scopes | Base Access | Content R/W | CRM Objects |
 | Token Storage | Redis | Redis | Redis |
 
-## Task Status
+## Task Status & Implementation
 
-### Task 1: OAuth2.0 Integration ✅
-- ✅ Implemented HubSpot OAuth2.0 flow
-- ✅ Secure state management and token storage
-- ✅ Working popup window handling
-- ✅ Error handling and user feedback
+### Task 1: HubSpot OAuth2.0 Integration ✅
+Implemented HubSpot OAuth flow and authorization with:
+- Secure credential storage and state management
+- OAuth popup window handling
+- Token exchange and callback handling
 
-### Task 2: Data Integration & Display ✅
-- ✅ Fetching contacts and deals from HubSpot
-- ✅ Data standardization using IntegrationItem format
-- ✅ Console output for verification
-- ✅ Error handling and loading states
+Files Modified:
+- `/backend/integrations/hubspot.py` - Core OAuth implementation
+- `/frontend/src/integrations/hubspot.js` - Frontend OAuth flow
+- `/backend/main.py` - Added HubSpot endpoints
+- `/backend/.env` - Added HubSpot credentials
+
+### Task 2: HubSpot Data Integration ✅
+Implemented data retrieval and display with:
+- Contacts and deals fetching
+- Standardized data format
+- Console and UI display
+- Error handling
+
+Files Modified:
+- `/backend/integrations/hubspot.py` - Added data fetching
+- `/frontend/src/data-form.js` - Updated data display
+- `/frontend/src/integration-form.js` - Added HubSpot support
+
+Both tasks are now complete with working OAuth flow, data retrieval, and display functionality.
 
 ## Implementation Workflow
 
