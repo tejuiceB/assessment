@@ -204,27 +204,6 @@ Implementation Requirements
    - Code comments
    - Architecture overview
 
-## Getting Started
-
-Follow these steps to get started with development:
-
-1. Clone the repository
-2. Set up Redis (see Prerequisites section)
-3. Install backend dependencies
-4. Install frontend dependencies
-5. Set up environment variables
-6. Start the development servers
-
-For detailed setup instructions, see the Setup Instructions section above.
-
-The ideal solution will demonstrate:
-- Strong understanding of OAuth2.0 security
-- Clean architecture and code organization 
-- Proper error handling and edge cases
-- User-friendly interface design
-- Scalable and maintainable implementation
-- Industry best practices and patterns
-
 ## Assignment Tasks
 
 ### Task 1: Complete the HubSpot Integration
