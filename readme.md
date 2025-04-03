@@ -1,34 +1,6 @@
 # Integration Technical Assessment
 
 This project implements a full-stack integration platform that allows connecting to various third-party services using OAuth2.0.
-
-## Project Structure
-
-```
-.
-├── backend/                   # FastAPI backend
-│   ├── integrations/         # Integration implementations 
-│   │   ├── airtable.py      # Airtable OAuth2 and API integration
-│   │   ├── notion.py        # Notion OAuth2 and API integration
-│   │   ├── hubspot.py       # HubSpot OAuth2 and API integration
-│   │   └── integration_item.py  # Shared integration data model
-│   ├── main.py              # FastAPI application and routes
-│   ├── redis_client.py      # Redis connection and helper functions  
-│   └── requirements.txt     # Python dependencies
-│
-└── frontend/                 # React frontend
-    ├── src/
-    │   ├── integrations/    # Integration-specific React components
-    │   │   ├── airtable.js  # Airtable integration UI
-    │   │   ├── notion.js    # Notion integration UI  
-    │   │   └── slack.js     # Slack integration UI
-    │   ├── App.js           # Root React component
-    │   ├── data-form.js     # Data display component
-    │   └── integration-form.js  # Main integration form
-    ├── package.json         # NPM dependencies
-    └── README.md            # Frontend documentation
-```
-
 ## Features
 
 - OAuth2.0 integration with multiple services
