@@ -16,6 +16,19 @@ export const DataForm = ({ integrationType, credentials }) => {
     const [loadedData, setLoadedData] = useState(null);
     const endpoint = endpointMapping[integrationType];
 
+    const formatData = (data) => {
+        if (!Array.isArray(data)) return JSON.stringify(data, null, 2);
+        
+        return data.map(item => (
+            `Type: ${item.type}\n` +
+            `Name: ${item.name}\n` +
+            `Created: ${item.creation_time}\n` +
+            `URL: ${item.url}\n` +
+            (item.children ? `Details: ${item.children.join(', ')}\n` : '') +
+            '-'.repeat(50) + '\n'
+        )).join('\n');
+    };
+
     const handleLoad = async () => {
         try {
             const formData = new FormData();
@@ -27,7 +40,7 @@ export const DataForm = ({ integrationType, credentials }) => {
             
             const response = await axios.post(`http://localhost:8000/integrations/${endpoint}`, formData);
             const data = response.data;
-            setLoadedData(JSON.stringify(data, null, 2)); // Pretty print the JSON data
+            setLoadedData(formatData(data));
         } catch (e) {
             console.error("Load error:", e);
             alert(e?.response?.data?.detail || 'Failed to load data');
@@ -43,6 +56,9 @@ export const DataForm = ({ integrationType, credentials }) => {
                     sx={{mt: 2}}
                     InputLabelProps={{ shrink: true }}
                     disabled
+                    multiline
+                    rows={10}
+                    variant="outlined"
                 />
                 <Button
                     onClick={handleLoad}
