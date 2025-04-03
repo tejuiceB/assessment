@@ -1,34 +1,6 @@
 # Integration Technical Assessment
 
 This project implements a full-stack integration platform that allows connecting to various third-party services using OAuth2.0.
-
-## Project Structure
-
-```
-.
-├── backend/                   # FastAPI backend
-│   ├── integrations/         # Integration implementations 
-│   │   ├── airtable.py      # Airtable OAuth2 and API integration
-│   │   ├── notion.py        # Notion OAuth2 and API integration
-│   │   ├── hubspot.py       # HubSpot OAuth2 and API integration
-│   │   └── integration_item.py  # Shared integration data model
-│   ├── main.py              # FastAPI application and routes
-│   ├── redis_client.py      # Redis connection and helper functions  
-│   └── requirements.txt     # Python dependencies
-│
-└── frontend/                 # React frontend
-    ├── src/
-    │   ├── integrations/    # Integration-specific React components
-    │   │   ├── airtable.js  # Airtable integration UI
-    │   │   ├── notion.js    # Notion integration UI  
-    │   │   └── slack.js     # Slack integration UI
-    │   ├── App.js           # Root React component
-    │   ├── data-form.js     # Data display component
-    │   └── integration-form.js  # Main integration form
-    ├── package.json         # NPM dependencies
-    └── README.md            # Frontend documentation
-```
-
 ## Features
 
 - OAuth2.0 integration with multiple services
@@ -203,27 +175,6 @@ Implementation Requirements
    - API documentation
    - Code comments
    - Architecture overview
-
-## Getting Started
-
-Follow these steps to get started with development:
-
-1. Clone the repository
-2. Set up Redis (see Prerequisites section)
-3. Install backend dependencies
-4. Install frontend dependencies
-5. Set up environment variables
-6. Start the development servers
-
-For detailed setup instructions, see the Setup Instructions section above.
-
-The ideal solution will demonstrate:
-- Strong understanding of OAuth2.0 security
-- Clean architecture and code organization 
-- Proper error handling and edge cases
-- User-friendly interface design
-- Scalable and maintainable implementation
-- Industry best practices and patterns
 
 ## Assignment Tasks
 
