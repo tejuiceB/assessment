@@ -426,31 +426,92 @@ sequenceDiagram
 
 ```
 
-### Workflow Steps Explanation
+## Integration Workflows
 
-1. **Initial Connection (Blue)**
-   - User initiates connection from UI
-   - Backend generates state token
-   - Frontend opens OAuth popup
+```mermaid
+graph TD
+    subgraph "Common Frontend Components"
+        UI[User Interface]
+        IntForm[Integration Form]
+        DataDisp[Data Display]
+    end
 
-2. **Authorization (Green)**
-   - User authorizes in HubSpot
-   - Backend validates callback
-   - Token exchange occurs
-   - Credentials stored in Redis
+    subgraph "Airtable Integration"
+        A_Auth[Authorize]
+        A_CB[OAuth Callback]
+        A_Cred[Get Credentials]
+        A_Data[Fetch Data]
+        
+        A_Auth --> A_CB
+        A_CB --> A_Cred
+        A_Cred --> A_Data
+    end
 
-3. **Data Retrieval (Orange)**
-   - Frontend requests credentials
-   - Backend fetches HubSpot data
-   - Data formatted and displayed
+    subgraph "Notion Integration"
+        N_Auth[Authorize]
+        N_CB[OAuth Callback]
+        N_Cred[Get Credentials]
+        N_Data[Fetch Data]
+        
+        N_Auth --> N_CB
+        N_CB --> N_Cred
+        N_Cred --> N_Data
+    end
 
-4. **Security Measures (Red)**
+    subgraph "HubSpot Integration"
+        H_Auth[Authorize]
+        H_CB[OAuth Callback]
+        H_Cred[Get Credentials]
+        H_Data[Fetch Contacts]
+        
+        H_Auth --> H_CB
+        H_CB --> H_Cred
+        H_Cred --> H_Data
+    end
+
+    UI --> IntForm
+    IntForm --> |Select Integration| A_Auth
+    IntForm --> |Select Integration| N_Auth
+    IntForm --> |Select Integration| H_Auth
+    
+    A_Data --> DataDisp
+    N_Data --> DataDisp
+    H_Data --> DataDisp
+
+```
+
+### Integration Flow Comparison
+
+1. **Frontend Layer**
+   - Common user interface for all integrations
+   - Integration selection form
+   - Unified data display component
+
+2. **OAuth Flow (All Integrations)**
+   - Authorization initiation
+   - OAuth callback handling
+   - Credential management
    - State validation
-   - Secure token storage
-   - Redis temporary storage
-   - CORS protection
 
-The workflow ensures secure OAuth2.0 implementation while maintaining a smooth user experience.
+3. **Data Retrieval**
+   - Airtable: Bases and tables
+   - Notion: Pages and blocks
+   - HubSpot: Contacts and properties
+
+4. **Security Features**
+   - Redis state management
+   - CORS protection
+   - Secure token storage
+   - Error handling
+
+### Key Differences
+
+| Feature | Airtable | Notion | HubSpot |
+|---------|----------|---------|----------|
+| Auth Method | PKCE Flow | Basic OAuth | OAuth 2.0 |
+| Data Type | Tables | Pages | Contacts |
+| Scopes | Base Access | Content R/W | CRM Objects |
+| Token Storage | Redis | Redis | Redis |
 
 
 
