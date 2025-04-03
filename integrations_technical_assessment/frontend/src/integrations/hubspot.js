@@ -17,26 +17,31 @@ export const HubspotIntegration = ({ user, org, integrationParams, setIntegratio
             formData.append('user_id', user);
             formData.append('org_id', org);
             
-            const response = await axios.post('http://localhost:8000/integrations/hubspot/authorize', formData, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                withCredentials: false
-            });
-            
+            const response = await axios.post('http://localhost:8000/integrations/hubspot/authorize', formData);
             const authURL = response?.data;
-            const newWindow = window.open(authURL, 'HubSpot Authorization', 'width=600,height=600,menubar=no,toolbar=no,location=no,status=no');
             
-            if (!newWindow) {
+            // Update popup window options
+            const width = 600;
+            const height = 700;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+            
+            const popup = window.open(
+                authURL,
+                'HubSpot Authorization',
+                `width=${width},height=${height},left=${left},top=${top},toolbar=0,location=0,status=0,menubar=0`
+            );
+            
+            if (!popup) {
                 alert('Please allow popups for this site');
                 setIsConnecting(false);
                 return;
             }
 
+            // Check both popup closed and URL changes
             const pollTimer = setInterval(() => {
                 try {
-                    if (newWindow.closed) {
+                    if (popup.closed) {
                         clearInterval(pollTimer);
                         handleWindowClosed();
                     }

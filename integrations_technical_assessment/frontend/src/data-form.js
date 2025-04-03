@@ -7,8 +7,9 @@ import {
 import axios from 'axios';
 
 const endpointMapping = {
-    'Notion': 'notion',
-    'Airtable': 'airtable',
+    'Notion': 'notion/load',
+    'Airtable': 'airtable/load',
+    'Hubspot': 'hubspot/load'  // Just /load, not /load/load
 };
 
 export const DataForm = ({ integrationType, credentials }) => {
@@ -19,11 +20,17 @@ export const DataForm = ({ integrationType, credentials }) => {
         try {
             const formData = new FormData();
             formData.append('credentials', JSON.stringify(credentials));
-            const response = await axios.post(`http://localhost:8000/integrations/${endpoint}/load`, formData);
+            
+            // Log for debugging
+            console.log("Loading data from:", `http://localhost:8000/integrations/${endpoint}`);
+            console.log("With credentials:", credentials);
+            
+            const response = await axios.post(`http://localhost:8000/integrations/${endpoint}`, formData);
             const data = response.data;
-            setLoadedData(data);
+            setLoadedData(JSON.stringify(data, null, 2)); // Pretty print the JSON data
         } catch (e) {
-            alert(e?.response?.data?.detail);
+            console.error("Load error:", e);
+            alert(e?.response?.data?.detail || 'Failed to load data');
         }
     }
 

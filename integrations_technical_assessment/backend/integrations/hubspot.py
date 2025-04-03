@@ -19,11 +19,19 @@ load_dotenv()
 CLIENT_ID = os.getenv('HUBSPOT_CLIENT_ID')
 CLIENT_SECRET = os.getenv('HUBSPOT_CLIENT_SECRET')
 REDIRECT_URI = os.getenv('HUBSPOT_REDIRECT_URI')
-SCOPES = 'crm.objects.contacts.read' # Valid scope for reading contacts
+SCOPES = ' '.join([
+    'crm.objects.contacts.read',
+    'crm.objects.contacts.write', 
+    'crm.objects.deals.read',
+    'crm.schemas.contacts.read'
+])
 
 async def authorize_hubspot(user_id, org_id):
     if not CLIENT_ID or not CLIENT_SECRET:
         raise HTTPException(status_code=500, detail="HubSpot credentials not configured")
+    
+    print("DEBUG: Using Client ID:", CLIENT_ID)
+    print("DEBUG: Using Redirect URI:", REDIRECT_URI)
     
     state_data = {
         'state': secrets.token_urlsafe(32),
@@ -34,13 +42,19 @@ async def authorize_hubspot(user_id, org_id):
     encoded_state = base64.urlsafe_b64encode(json.dumps(state_data).encode('utf-8')).decode('utf-8')
     await add_key_value_redis(f'hubspot_state:{org_id}:{user_id}', json.dumps(state_data), expire=600)
     
-    auth_url = f'https://app.hubspot.com/oauth/authorize?client_id={CLIENT_ID}&scope={SCOPES}&redirect_uri={REDIRECT_URI}&state={encoded_state}'
+    auth_url = (
+        f'https://app.hubspot.com/oauth/authorize'
+        f'?client_id={CLIENT_ID}'
+        f'&redirect_uri={REDIRECT_URI}'
+        f'&scope={SCOPES}'
+        f'&state={encoded_state}'
+    )
     print("DEBUG: Generated auth URL:", auth_url)
     return auth_url
 
 async def oauth2callback_hubspot(request: Request):
     try:
-        print("DEBUG: Query params:", dict(request.query_params))
+        print("DEBUG: Received callback with params:", dict(request.query_params))
         
         if request.query_params.get('error'):
             raise HTTPException(status_code=400, detail=request.query_params.get('error_description'))
@@ -109,6 +123,9 @@ async def create_integration_item_metadata_object(response_json):
     return integration_item_metadata
 
 async def get_items_hubspot(credentials):
+    """
+    Fetch contacts and deals from HubSpot and return as IntegrationItem objects
+    """
     credentials = json.loads(credentials)
     access_token = credentials.get('access_token')
     
@@ -117,24 +134,77 @@ async def get_items_hubspot(credentials):
         'Content-Type': 'application/json'
     }
     
-    # Get contacts as example
-    response = requests.get(
-        'https://api.hubapi.com/crm/v3/objects/contacts',
-        headers=headers
-    )
+    items = []
     
-    if response.status_code == 200:
-        data = response.json()
-        items = []
-        for result in data.get('results', []):
-            item = IntegrationItem(
-                id=result.get('id'),
-                type='contact',
-                name=f"{result.get('properties', {}).get('firstname', '')} {result.get('properties', {}).get('lastname', '')}",
-                creation_time=result.get('createdAt'),
-                last_modified_time=result.get('updatedAt')
-            )
-            items.append(item)
+    # Fetch Contacts
+    try:
+        contacts_response = requests.get(
+            'https://api.hubapi.com/crm/v3/objects/contacts',
+            headers=headers,
+            params={'limit': 100}  # Adjust limit as needed
+        )
+        
+        if contacts_response.status_code == 200:
+            contacts_data = contacts_response.json()
+            print("DEBUG: Retrieved contacts:", len(contacts_data.get('results', [])))
+            
+            for contact in contacts_data.get('results', []):
+                props = contact.get('properties', {})
+                item = IntegrationItem(
+                    id=f"contact_{contact.get('id')}",
+                    type='contact',
+                    name=f"{props.get('firstname', '')} {props.get('lastname', '')}",
+                    creation_time=props.get('createdate'),
+                    last_modified_time=props.get('lastmodifieddate'),
+                    url=f"https://app.hubspot.com/contacts/{contact.get('id')}",
+                    parent_path_or_name='Contacts',
+                    visibility=True
+                )
+                items.append(item)
+    
+        # Fetch Deals
+        deals_response = requests.get(
+            'https://api.hubapi.com/crm/v3/objects/deals',
+            headers=headers,
+            params={'limit': 100}
+        )
+        
+        if deals_response.status_code == 200:
+            deals_data = deals_response.json()
+            print("DEBUG: Retrieved deals:", len(deals_data.get('results', [])))
+            
+            for deal in deals_data.get('results', []):
+                props = deal.get('properties', {})
+                item = IntegrationItem(
+                    id=f"deal_{deal.get('id')}",
+                    type='deal',
+                    name=props.get('dealname', 'Unnamed Deal'),
+                    creation_time=props.get('createdate'),
+                    last_modified_time=props.get('lastmodifieddate'),
+                    url=f"https://app.hubspot.com/deals/{deal.get('id')}",
+                    parent_path_or_name='Deals',
+                    visibility=True,
+                    # Add deal-specific fields
+                    children=[
+                        f"Amount: ${props.get('amount', '0')}",
+                        f"Stage: {props.get('dealstage', 'Unknown')}"
+                    ]
+                )
+                items.append(item)
+
+        # Print results to console
+        print("\nRetrieved HubSpot Items:")
+        for item in items:
+            print(f"\nType: {item.type}")
+            print(f"Name: {item.name}")
+            print(f"Created: {item.creation_time}")
+            print(f"URL: {item.url}")
+            if item.children:
+                print("Details:", item.children)
+            print("-" * 50)
+
         return items
-    else:
-        raise HTTPException(status_code=response.status_code, detail='Failed to fetch HubSpot data')
+
+    except Exception as e:
+        print("DEBUG: Error fetching HubSpot data:", str(e))
+        raise HTTPException(status_code=500, detail=f'Failed to fetch HubSpot data: {str(e)}')
