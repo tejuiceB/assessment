@@ -1,6 +1,6 @@
 # Detailed Integration Tasks Video Script
 
-## Introduction (2-3 minutes)
+## Introduction
 "Hello everyone, today I'll be walking you through my implementation of the integration tasks. This project involved creating OAuth2 integrations for three different services: HubSpot, Notion, and Airtable."
 
 ### Tech Stack Overview:
@@ -23,7 +23,7 @@ graph TD
     style C fill:#d88,stroke:#666
 ```
 
-## Task 1: Backend Implementation (10 minutes)
+## Task 1: Backend Implementation
 
 ### 1. File Structure Demo (2 minutes)
 "Let me show you how I organized the code:"
@@ -38,7 +38,7 @@ backend/
   └── redis_client.py
 ```
 
-### 2. Integration Pattern (3 minutes)
+### 2. Integration Pattern
 "Each integration follows the same pattern. Let's look at HubSpot as an example:"
 
 1. Authorization Flow (backend/main.py):
@@ -122,7 +122,7 @@ sequenceDiagram
     B->>F: Close Popup
 ```
 
-### 3. Data Loading Demo (5 minutes)
+### 3. Data Loading Demo
 "Let me show you how we fetch and standardize data:"
 
 1. Show IntegrationItem class (backend/integrations/integration_item.py, lines 4-32):
@@ -218,9 +218,9 @@ async def get_items_hubspot(credentials):
        |                     |---------------------->>|
 ```
 
-## Task 2: Frontend Implementation (10 minutes)
+## Task 2: Frontend Implementation
 
-### 1. Component Structure (3 minutes)
+### 1. Component Structure
 "The frontend is built with React components:"
 
 ```jsx
@@ -229,7 +229,7 @@ async def get_items_hubspot(credentials):
 // integrations/*.js - Integration-specific components
 ```
 
-### 2. Integration Flow Demo (4 minutes)
+### 2. Integration Flow Demo
 "Let me walk you through the user flow:"
 
 1. User selects integration:
@@ -248,7 +248,7 @@ const handleAuthorize = async () => {
     // Handle OAuth flow
 ```
 
-### 3. Error Handling (3 minutes)
+### 3. Error Handling
 "I implemented comprehensive error handling:"
 ```jsx
 try {
@@ -328,11 +328,10 @@ if not CLIENT_ID or not CLIENT_SECRET:
     raise HTTPException(status_code=500, detail="HubSpot credentials not configured")
 ```
 
-## Technical Challenges & Solutions (5 minutes)
+## Technical Challenges & Solutions
 
 1. OAuth Security:
    - "Used state verification"
-   - "Implemented PKCE for Airtable"
    - "Secure credential storage in Redis"
 
 2. Cross-Origin Issues:
@@ -343,7 +342,7 @@ if not CLIENT_ID or not CLIENT_SECRET:
    - "Created common IntegrationItem format"
    - "Mapped different API responses"
 
-## Testing & Validation (3 minutes)
+## Testing & Validation
 
 1. Manual Testing:
    - "OAuth flow verification"
@@ -355,7 +354,7 @@ if not CLIENT_ID or not CLIENT_SECRET:
    - "Token storage security"
    - "API endpoint protection"
 
-## Demonstration (5 minutes)
+## Demonstration
 
 "Let me show you the complete flow:"
 1. Start application
@@ -365,7 +364,7 @@ if not CLIENT_ID or not CLIENT_SECRET:
 5. Show error handling
 6. Repeat for other integrations
 
-## Conclusion (2 minutes)
+## Conclusion
 
 1. Key Achievements:
    - "Successfully implemented three OAuth integrations"
@@ -377,23 +376,6 @@ if not CLIENT_ID or not CLIENT_SECRET:
    - "Implement rate limiting"
    - "Add more error recovery options"
 
-## Recording Tips
-1. Pre-recording:
-   - Test all integrations
-   - Clear Redis cache
-   - Have documentation ready
-   - Check audio/video quality
-
-2. During Recording:
-   - Speak clearly and at moderate pace
-   - Highlight key code sections
-   - Show both success and error scenarios
-   - Demonstrate real-world usage
-
-3. Post-recording:
-   - Add timestamps
-   - Include links to documentation
-   - Add captions if needed
 
 ## Integration Class Structure
 ```ascii
