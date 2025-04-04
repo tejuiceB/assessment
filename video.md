@@ -1,7 +1,7 @@
 # Detailed Integration Tasks Video Script
 
 ## Introduction
-"Hello everyone, today I'll be walking you through my implementation of the integration tasks. This project involved creating OAuth2 integrations for three different services: HubSpot, Notion, and Airtable."
+"Hello, I'll walk you through my integration task implementation. This project involved creating OAuth2 integrations for three different services: HubSpot, Notion, and Airtable."
 
 ### Tech Stack Overview:
 - Frontend: "I used React with Material-UI for the interface"
