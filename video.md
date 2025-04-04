@@ -23,7 +23,7 @@ graph TD
     style C fill:#d88,stroke:#666
 ```
 
-## Task 1: Backend Implementation
+## Backend Implementation
 
 ### 1. File Structure
 ```python
@@ -217,7 +217,7 @@ async def get_items_hubspot(credentials):
        |                     |---------------------->>|
 ```
 
-## Task 2: Frontend Implementation
+## Frontend Implementation
 
 ### 1. Component Structure
 "The frontend is built with React components:"
