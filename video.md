@@ -25,8 +25,7 @@ graph TD
 
 ## Task 1: Backend Implementation
 
-### 1. File Structure Demo (2 minutes)
-"Let me show you how I organized the code:"
+### 1. File Structure
 ```python
 backend/
   ├── integrations/
