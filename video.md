@@ -1,5 +1,3 @@
-# Detailed Integration Tasks Video Script
-
 ## Introduction
 "Hello, I'll walk you through my integration task implementation. This project involved creating OAuth2 integrations for three different services: HubSpot, Notion, and Airtable."
 
